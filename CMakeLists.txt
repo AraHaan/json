@@ -12,7 +12,7 @@ project(nlohmann_json VERSION 3.9.1 LANGUAGES CXX)
 ##
 set(MAIN_PROJECT OFF)
 if (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
-  set(MAIN_PROJECT ON)
+    set(MAIN_PROJECT ON)
 endif()
 
 ##
@@ -36,6 +36,7 @@ option(JSON_MultipleHeaders "Use non-amalgamated version of the library." OFF)
 option(JSON_ImplicitConversions "Enable implicit conversions." ON)
 option(JSON_Diagnostics "Enable better diagnostic messages." OFF)
 option(JSON_CI "Enable CI build targets." OFF)
+option(JSON_SystemInclude "Include as system headers (skip for clang-tidy)" OFF)
 
 if (JSON_CI)
     include(cmake/ci.cmake)
@@ -73,6 +74,10 @@ if (JSON_Diagnostics)
     message(STATUS "Diagnostics enabled")
 endif()
 
+if (JSON_SystemInclude)
+    set(NLOHMANN_JSON_SYSTEM_INCLUDE "SYSTEM")
+endif()
+
 ##
 ## TARGET
 ## create target and add include path
@@ -94,7 +99,7 @@ target_compile_definitions(
 
 target_include_directories(
     ${NLOHMANN_JSON_TARGET_NAME}
-    INTERFACE
+    ${NLOHMANN_JSON_SYSTEM_INCLUDE} INTERFACE
     $<BUILD_INTERFACE:${NLOHMANN_JSON_INCLUDE_BUILD_DIR}>
     $<INSTALL_INTERFACE:include>
 )
@@ -113,8 +118,8 @@ endif()
 
 # Install a pkg-config file, so other tools can find this.
 CONFIGURE_FILE(
-  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/pkg-config.pc.in"
-  "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/pkg-config.pc.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc"
 )
 
 ##
@@ -160,7 +165,7 @@ if(JSON_Install)
             FILES ${NLOHMANN_NATVIS_FILE}
             DESTINATION .
     )
-endif()
+    endif()
     export(
         TARGETS ${NLOHMANN_JSON_TARGET_NAME}
         NAMESPACE ${PROJECT_NAME}::

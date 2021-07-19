@@ -20,6 +20,10 @@ When enabled, exception messages contain a [JSON Pointer](json_pointer.md) to th
 
 The diagnostics messages can also be controlled with the CMake option `JSON_Diagnostics` (`OFF` by default) which sets `JSON_DIAGNOSTICS` accordingly.
 
+## `JSON_HAS_CPP_11`, `JSON_HAS_CPP_14`, `JSON_HAS_CPP_17`, `JSON_HAS_CPP_20`
+
+The library targets C++11, but also supports some features introduced in later C++ versions (e.g., `std::string_view` support for C++17). For these new features, the library implements some preprocessor checks to determine the C++ standard. By defining any of these symbols, the internal check is overridden and the provided C++ version is unconditionally assumed. This can be helpful for compilers that only implement parts of the standard and would be detected incorrectly.
+
 ## `JSON_NOEXCEPTION`
 
 Exceptions can be switched off by defining the symbol `JSON_NOEXCEPTION`.
@@ -27,6 +31,10 @@ When defining `JSON_NOEXCEPTION`, `#!cpp try` is replaced by `#!cpp if (true)`,
 `#!cpp catch` is replaced by `#!cpp if (false)`, and `#!cpp throw` is replaced by `#!cpp std::abort()`.
 
 The same effect is achieved by setting the compiler flag `-fno-exceptions`.
+
+## `JSON_NO_IO`
+
+When defined, headers `<cstdio>`, `<ios>`, `<iosfwd>`, `<istream>`, and `<ostream>` are not included and parse functions relying on these headers are excluded. This is relevant for environment where these I/O functions are disallowed for security reasons (e.g., Intel Software Guard Extensions (SGX)).
 
 ## `JSON_SKIP_UNSUPPORTED_COMPILER_CHECK`
 
